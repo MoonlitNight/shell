@@ -10,6 +10,12 @@ install_lrzsz(){
 	fi
 }
 install_jdk(){
+	java -version
+	if [ $? -eq 0 ]
+	then 
+		echo "----------jdk exist!-----------"
+		return
+	fi
 	if [ ! -f "jdk-8u121-linux-x64.rpm" ]
 	then
 	 echo "jdk not exist!"
@@ -24,6 +30,6 @@ install_jdk(){
 	echo "install jdk failure!"
 	fi
 	java -version
-	echo $?
 }
-install_lrzsz | install_jdk
+install_lrzsz
+install_jdk
