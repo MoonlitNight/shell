@@ -1,5 +1,9 @@
 #!/bin/bash
 # author:wang jin
+init_setting(){
+	timedatectl set-timezone Asia/Shanghai
+	
+}
 install_lrzsz(){
 	yum install lrzsz
 	if [ $? -eq 0 ]
