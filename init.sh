@@ -4,9 +4,18 @@ init_setting(){
 	#network setting
 	systemctl enable firewalld.service
 	systemctl start firewalld.service
-	firewall-cmd --zone=public --add-port=21991/tcp --permanent
-	firewall-cmd --zone=public --add-port=80/tcp --permanent
-	firewall-cmd --zone=public --add-port=3306/tcp --permanent
+	ssh_port=""
+	while [ "$ssh_port" != "exit"   ]
+	do
+		read -p "please enter your firewall communication port used(enter exit this feature):" ssh_port
+		add_script="firewall-cmd --zone=public --add-port=$ssh_port/tcp --permanent"
+		eval $add_script
+		if [ $? -eq 0 ]
+		then
+		echo "$add_script success!"
+		fi
+	done
+	echo "add firewall rule success!"
 	firewall-cmd --reload
 	#timezone setting
 	timedatectl set-timezone Asia/Shanghai
@@ -121,3 +130,6 @@ install_shadowsocks(){
 install_lrzsz
 install_jdk
 install_mysql
+install_nginx
+install_shadowsocks
+init_setting
