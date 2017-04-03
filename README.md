@@ -1,6 +1,7 @@
 # shell  
 centos7 系统环境初始化脚本  
-包含内容：		
+包含内容：  
+	
 	安装lrzsz  	
 	安装jdk1.8  	
 	安装mysql5.7  
