@@ -3,7 +3,14 @@
 init_setting(){
 	#network setting
 	systemctl enable firewalld.service
-	systemctl start firewalld.service
+	systemctl start firewalld.service	
+	add_firewall_port
+	#timezone setting
+	timedatectl set-timezone Asia/Shanghai
+	echo "0 2 * * * /sbin/reboot"  >> /var/spool/cron/root
+	service crond restart
+}
+add_firewall_port(){
 	ssh_port=""
 	while [ "$ssh_port" != "exit"   ]
 	do
@@ -17,13 +24,9 @@ init_setting(){
 	done
 	echo "add firewall rule success!"
 	firewall-cmd --reload
-	#timezone setting
-	timedatectl set-timezone Asia/Shanghai
-	echo "0 2 * * * /sbin/reboot"  >> /var/spool/cron/root
-	service crond restart
 }
 install_lrzsz(){
-	yum install lrzsz
+	yum install -y lrzsz
 	if [ $? -eq 0 ]
 	then 
 	echo "install lrzsz success!"
@@ -63,7 +66,7 @@ install_mysql(){
 	then 
 	echo "install mysql source success!"
 	rm -f mysql57-community-release-el7-9.noarch.rpm*
-	yum install mysql-community-server
+	yum install -y mysql-community-server
 	if [ ! -d "$bakdir" ]; then mkdir $bakdir; fi 
 	cp $configpath $bakdir
 	echo "validate_password_policy=0" >> $configpath
@@ -85,7 +88,7 @@ install_nginx(){
 	echo "gpgcheck=0" >> $yumSourceDir
 	echo "enabled=1" >> $yumSourceDir
 	echo "write ngin yum source success!"
-	yum install nginx
+	yum install -y nginx
 	systemctl enable nginx.service
 	cp /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
 	echo "backup nginx default config:nginx.conf.bak success!"
@@ -127,9 +130,46 @@ install_shadowsocks(){
 	systemctl enable shadowsocks.service
 	systemctl start shadowsocks.service
 }
-install_lrzsz
-install_jdk
-install_mysql
-install_nginx
-install_shadowsocks
-init_setting
+show(){
+	echo -e "\n"
+	echo "----------------------------------"  
+	echo "please enter your choise:"  
+	echo "(0) default_auto_install"  
+	echo "(1) init setting"  
+	echo "(2) add firewall port"  
+	echo "(3) install lrzsz"  
+	echo "(4) install jdk1.8"  
+	echo "(5) install mysql 5.7"  
+	echo "(6) install nginx" 
+	echo "(7) install shadowsocks" 
+	echo "(8) Exit Menu"  
+	echo "----------------------------------"  
+}
+menu(){
+	input=0
+	while [ $input -ne 8 ]
+	do
+	show
+	read input
+	case $input in  
+		0) default_auto_install;;  
+		1) init_setting;;  
+		2) add_firewall_port;;  
+		3) install_lrzsz;;  
+		4) install_jdk;;  
+		5) install_mysql;;  
+		6) install_nginx;;
+		7) install_shadowsocks;;
+		9) exit;;  
+	esac
+	done
+}
+default_auto_install(){
+	install_lrzsz
+	install_jdk
+	install_mysql
+	install_nginx
+	install_shadowsocks
+	init_setting
+}
+menu
