@@ -160,7 +160,7 @@ menu(){
 		5) install_mysql;;  
 		6) install_nginx;;
 		7) install_shadowsocks;;
-		9) exit;;  
+		8) exit;;  
 	esac
 	done
 }
