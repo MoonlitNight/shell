@@ -9,6 +9,7 @@ init_setting(){
 	timedatectl set-timezone Asia/Shanghai
 	echo "0 2 * * * /sbin/reboot"  >> /var/spool/cron/root
 	service crond restart
+	systemctl enable crond.service
 }
 add_firewall_port(){
 	ssh_port=""
